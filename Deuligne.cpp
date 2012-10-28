@@ -71,7 +71,7 @@ void WriteLCDByte( byte deviceAddr, byte bdata ) {
 }
 
 void Deuligne::init( void ) {
-  TWBR = ((CPU_FREQ / TWI_FREQ_MCP23008) - 16) / 2;
+  TWBR = ((F_CPU / TWI_FREQ_MCP23008) - 16) / 2;
   dataPlusMask = 0; // initial: 0
   SetMCPReg(myAddress,0x05,0x0C); // set CONFREG (0x05) to 0
   SetMCPReg(myAddress,0x00,0x00); // set IOREG (0x00) to 0

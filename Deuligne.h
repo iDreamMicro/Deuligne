@@ -62,7 +62,6 @@
 
 
 // overclcking I2C
-#define CPU_FREQ 16000000L // (...) - a discuter, car fonction vitesse clock cpu
 #define TWI_FREQ_MCP23008 400000L
 
 // IMPORTANT! Wire. must have a begin() before calling init()
