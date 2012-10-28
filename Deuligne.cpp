@@ -22,6 +22,18 @@ extern "C" {
 #include "Arduino.h"
 #endif
 
+// MCP23008 registers.
+#define MCP23008__REG_IODIR		0x00
+#define MCP23008__REG_IPOL		0x01
+#define MCP23008__REG_GPINTEN	0x02
+#define MCP23008__REG_DEFVAL	0x03
+#define MCP23008__REG_INTCON	0x04
+#define MCP23008__REG_IOCON		0x05
+#define MCP23008__REG_GPPU		0x06
+#define MCP23008__REG_INTF		0x07
+#define MCP23008__REG_INTCAP	0x08
+#define MCP23008__REG_GPIO		0x09
+#define MCP23008__REG_OLAT		0x0A
 
 //command bytes for LCD
 #define CMD_CLR 0x01
@@ -55,13 +67,13 @@ void SetMCPReg( byte deviceAddr, byte reg, byte val ) {
 
 void SendToLCD( byte deviceAddr, byte data ) {
   data |= dataPlusMask;
-  SetMCPReg(deviceAddr,0x0A,data);
+  SetMCPReg(deviceAddr, MCP23008__REG_OLAT, data);
   data ^= 0x10; // E
   delayMicroseconds(1);
-  SetMCPReg(deviceAddr,0x0A,data);
+  SetMCPReg(deviceAddr, MCP23008__REG_OLAT, data);
   data ^= 0x10; // E
   delayMicroseconds(1);
-  SetMCPReg(deviceAddr,0x0A,data);
+  SetMCPReg(deviceAddr, MCP23008__REG_OLAT, data);
   delay(1);
 }
 
@@ -73,8 +85,8 @@ void WriteLCDByte( byte deviceAddr, byte bdata ) {
 void Deuligne::init( void ) {
   TWBR = ((F_CPU / TWI_FREQ_MCP23008) - 16) / 2;
   dataPlusMask = 0; // initial: 0
-  SetMCPReg(myAddress,0x05,0x0C); // set CONFREG (0x05) to 0
-  SetMCPReg(myAddress,0x00,0x00); // set IOREG (0x00) to 0
+  SetMCPReg(myAddress, MCP23008__REG_IOCON, 0x0C);
+  SetMCPReg(myAddress, MCP23008__REG_IODIR, 0x00);
   //
   delay(50);
   SendToLCD(myAddress,0x03); 
@@ -101,7 +113,7 @@ void Deuligne::init( void ) {
 
 void Deuligne::backLight( bool turnOn ) {
   dataPlusMask = turnOn ? (dataPlusMask | 0x80) : (dataPlusMask & ~0x80);
-  SetMCPReg(myAddress,0x0A,dataPlusMask);  
+  SetMCPReg(myAddress, MCP23008__REG_OLAT, dataPlusMask);  
 }
 
 
