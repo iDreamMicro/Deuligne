@@ -86,21 +86,29 @@ void Deuligne::init( void ) {
   TWBR = ((F_CPU / TWI_FREQ_MCP23008) - 16) / 2;
   dataPlusMask = 0; // initial: 0
   SetMCPReg(myAddress, MCP23008__REG_IOCON, 0x0C);
+  // Set all pins as outputs.
   SetMCPReg(myAddress, MCP23008__REG_IODIR, 0x00);
-  //
+  // Wait for LCD initialization.
   delay(50);
-  SendToLCD(myAddress,0x03); 
+  // Set 8-bit interface.
+  SendToLCD(myAddress, 0x03); 
   delay(5);
-  SendToLCD(myAddress,0x03);
+  // Set 8-bit interface.
+  SendToLCD(myAddress, 0x03);
   delayMicroseconds(100);
-  SendToLCD(myAddress,0x03);
+  // Set 8-bit interface.
+  SendToLCD(myAddress, 0x03);
   delay(5);
-  SendToLCD(myAddress,0x02);
-  WriteLCDByte(myAddress,0x28);
-  WriteLCDByte(myAddress,0x08);
-  WriteLCDByte(myAddress,0x0C); // turn on, cursor off, no blinking
+  // Set 4-bit interface.
+  SendToLCD(myAddress, 0x02);
+  // Two lines display.
+  WriteLCDByte(myAddress, LCD_FUNCTIONSET | LCD_2LINE);
+  WriteLCDByte(myAddress, 0x08);
+  // Turn on display, no cursor, no blinking.
+  WriteLCDByte(myAddress, LCD_DISPLAYCONTROL | LCD_DISPLAYON);
   delayMicroseconds(60);
-  WriteLCDByte(myAddress,LCD_CLEARDISPLAY); // clear display
+  // Clear display.
+  WriteLCDByte(myAddress, LCD_CLEARDISPLAY);
   delay(3);  
   _displaycontrol = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;  
   // Initialize to default text direction (for romance languages)
